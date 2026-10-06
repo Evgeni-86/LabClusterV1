@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  registry:
+    image: registry:3
+    container_name: test-prod-registry
+    restart: always
+    ports:
+      - "5000:5000"  # доступ с хоста
+    volumes:
+      - registry_data:/var/lib/registry  # сохраняем образы между перезапусками
+    networks:
+      - test-prod-net
+      
+  gitea:
+    image: gitea/gitea:1.25
+    container_name: test-prod-gitea
+    restart: always
+    ports:
+      - "3000:3000"  # Web UI
+      - "2222:22"    # SSH (на хосте 2222)
+    volumes:
+      - gitea_data:/data
+    networks: [test-prod-net]
+    
+  jenkins:
+    image: jenkins/jenkins:2.554
+    container_name: test-prod-jenkins
+    restart: always
+    ports:
+      - "8082:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+    environment:
+      - DOCKER_HOST=tcp://host.docker.internal:2375 
+    networks:
+      - test-prod-net
+
+networks:
+  test-prod-net:
+    external: true  # используем существующую сеть кластера
+
+volumes:
+  registry_data:
+    name: test-prod-registry-data
+  gitea_data:
+    name: test-prod-gitea-data
+  jenkins_data:
+    name: test-prod-jenkins-data

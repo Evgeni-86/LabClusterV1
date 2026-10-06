@@ -1,0 +1,8 @@
+FROM jenkins/inbound-agent:jdk21
+USER root
+
+# Устанавливаем Git и Docker клиент
+RUN apt-get update && apt-get install -y git docker.io
+
+# Возвращаем пользователя jenkins
+USER jenkins

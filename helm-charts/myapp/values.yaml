@@ -1,0 +1,11 @@
+namespace: myapp-prod
+appName: myapp
+replicaCount: 1
+
+image:
+  repository: registry:5000/test-java-app  # наш локальный registry
+  tag: 6
+  pullPolicy: Always
+
+service:
+  port: 80
